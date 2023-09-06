@@ -7,6 +7,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(Options =>
 Options.UseSqlServer(connectionString));
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICategoryService , CategoryService>();
+builder.Services.AddScoped<IDeviceService , DeviceService>();
 
 var app = builder.Build();
 

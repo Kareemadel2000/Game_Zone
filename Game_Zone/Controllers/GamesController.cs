@@ -1,14 +1,14 @@
-﻿using Game_Zone.ViewModels;
-
-namespace Game_Zone.Controllers;
+﻿namespace Game_Zone.Controllers;
 
 public class GamesController : Controller
 {
-    private readonly ApplicationDBContext _dbContext;
+    private readonly ICategoryService _categoryService;
+    private readonly IDeviceService _deviceService;
 
-    public GamesController(ApplicationDBContext dbContext)
+    public GamesController(ICategoryService categoryService, IDeviceService deviceService)
     {
-        _dbContext = dbContext;
+        _categoryService = categoryService;
+        _deviceService = deviceService;
     }
 
     #region Index
@@ -25,21 +25,24 @@ public class GamesController : Controller
     {
         CreateGameFormViewModel viewModel = new()
         {
-            Categories = _dbContext.Categories
-            .Select(c => new SelectListItem { Value = c.Id.ToString() ,Text=c.Name})
-            .OrderBy(c=>c.Text)
-            .ToList()
+            Categories = _categoryService.GetSelectListCategory() ,
+            Devices = _deviceService.GetSelectListsDevice() ,
         };
         return View(viewModel);
     }
 
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult Create(ApplicationDBConte)
-    //{
-
-    //    return View();
-    //}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(CreateGameFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Categories = _categoryService.GetSelectListCategory();
+            model.Devices = _deviceService.GetSelectListsDevice();
+            return View(model);
+        }
+        return RedirectToAction(nameof(Index));
+    }
 
     #endregion
 
