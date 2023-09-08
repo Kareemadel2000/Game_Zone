@@ -4,11 +4,15 @@ public class GamesController : Controller
 {
     private readonly ICategoryService _categoryService;
     private readonly IDeviceService _deviceService;
+    private readonly IGameService _gameServices;
 
-    public GamesController(ICategoryService categoryService, IDeviceService deviceService)
+    public GamesController(ICategoryService categoryService,
+        IDeviceService deviceService, 
+        IGameService gameServices)
     {
         _categoryService = categoryService;
         _deviceService = deviceService;
+        _gameServices = gameServices;
     }
 
     #region Index
@@ -33,7 +37,7 @@ public class GamesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(CreateGameFormViewModel model)
+    public async Task<IActionResult> Create(CreateGameFormViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -41,6 +45,7 @@ public class GamesController : Controller
             model.Devices = _deviceService.GetSelectListsDevice();
             return View(model);
         }
+        await _gameServices.Create(model);
         return RedirectToAction(nameof(Index));
     }
 
