@@ -23,3 +23,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+/*Start Customer Style*/
+.cover-preview {
+    max-height:550px;
+    border-radius:10px;
+}
+/*End Customer Style*/

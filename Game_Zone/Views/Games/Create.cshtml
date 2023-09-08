@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label asp-for="CategoryId" class="form-label mt-4"></label>
                 <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories">
-                    <option>Select a category</option>
+                    <option value="">Select a category</option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
@@ -37,12 +37,33 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cover" class="form-label mt-4"></label>
-                <input type="file" class="form-control" asp-for="Cover">
-                <small class="form-text text-muted">Only .jpg , .jpgs , .png files allowed with max size 1MB.</small>
+                <input type="file" class="form-control" asp-for="Cover"
+                       data-rule-extension =" @FileSettingImage.AllowedExtensions.Replace(".",string.Empty)"
+                       data-msg-extension="Not allowed extension"
+                       data-rule-filesize="@FileSettingImage.MaxFileSizeInBytes"
+                        data-msg-filesize="Maximum allowed size is @FileSettingImage.MaxFileSizeInMB MB">
+                <small class="form-text text-muted">Only @FileSettingImage.AllowedExtensions files allowed with max size  @FileSettingImage.MaxFileSizeInMB MB.</small>
                 <span asp-validation-for="Cover" class="text-danger d-block"></span>
             </div>
             <button type="submit" class="btn btn-light text-black mt-4">Save</button>
         </div>
-        <div class="col-md-6"></div>
+        <div class="col-md-6 d-flex justify-content-center pt-5 overflow-hidden">
+            <img class="cover-preview d-none" alt="Cover"/>
+        </div>
     </div>
 </form>
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial"/>
+<script>
+    $.validator.addMethod('filesize', function (value, element, param) {
+        return this.optional(element) || element.files[0].size <= param;
+    });
+
+    $(document).ready(function () {
+        $('#Cover').on('change', function () {
+            $('.cover-preview').attr('src', window.URL.createObjectURL(this.files[0])).removeClass('d-none');
+        });
+    });
+</script>
+}
