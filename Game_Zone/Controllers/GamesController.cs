@@ -4,24 +4,32 @@ public class GamesController : Controller
 {
     private readonly ICategoryService _categoryService;
     private readonly IDeviceService _deviceService;
-    private readonly IGameService _gameServices;
+    private readonly IGameService _gameService;
 
     public GamesController(ICategoryService categoryService,
         IDeviceService deviceService, 
-        IGameService gameServices)
+        IGameService gameService)
     {
         _categoryService = categoryService;
         _deviceService = deviceService;
-        _gameServices = gameServices;
+        _gameService = gameService;
     }
 
     #region Index
     public IActionResult Index()
     {
-        //var game = _dbContext.Games.ToList();
-        return View();
+        var game = _gameService.GetAll();
+        return View(game);
     }
     #endregion
+
+    public IActionResult Details(int id)
+    {
+        var game = _gameService.GetById(id);
+        if (game is null)
+            return NotFound();
+        return View(game);
+    }
 
     #region Create
     [HttpGet]
@@ -45,7 +53,7 @@ public class GamesController : Controller
             model.Devices = _deviceService.GetSelectListsDevice();
             return View(model);
         }
-        await _gameServices.Create(model);
+        await _gameService.Create(model);
         return RedirectToAction(nameof(Index));
     }
 
