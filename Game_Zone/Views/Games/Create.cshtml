@@ -44,7 +44,7 @@
                        data-msg-extension="Not allowed extension"
                        data-rule-filesize="@FileSettingImage.MaxFileSizeInBytes"
                        data-msg-filesize="Maximum allowed size is @FileSettingImage.MaxFileSizeInMB MB">
-                <small class="form-text text-muted">Only @FileSettingImage.AllowedExtensions files allowed with max size  @FileSettingImage.MaxFileSizeInMB MB.</small>
+                <small class="form-text text-muted">Only @FileSettingImage.AllowedExtensions files allowed with max size  @(FileSettingImage.MaxFileSizeInMB) MB.</small>
                 <span asp-validation-for="Cover" class="text-danger d-block"></span>
             </div>
             <button type="submit" class="btn btn-light text-black mt-4">Save</button>

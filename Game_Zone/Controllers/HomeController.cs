@@ -1,26 +1,22 @@
-using Game_Zone.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+namespace Game_Zone.Controllers;
 
-namespace Game_Zone.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly IGameService _gameService;
+
+    public HomeController(IGameService gameService)
     {
-        private readonly ILogger<HomeController> _logger;
+        _gameService = gameService;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    public IActionResult Index()
+    {
+        var game = _gameService.GetAll();
+        return View(game);
+    }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

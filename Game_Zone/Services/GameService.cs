@@ -1,4 +1,5 @@
-﻿namespace Game_Zone.Services;
+﻿
+namespace Game_Zone.Services;
 
 public class GameService : IGameService
 {
@@ -13,6 +14,17 @@ public class GameService : IGameService
         _webHostEnvironment = webHostEnvironment;
         _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettingImage.ImagesPath}";
     }
+    public IEnumerable<Game> GetAll()
+    {
+        return _dbContext.Games
+            .Include(g=> g.Category)
+            .Include(g=> g.Devices)
+            .ThenInclude(d=>d.Device)
+            .AsNoTracking()
+            .ToList();
+       
+    }
+
     public async Task Create(CreateGameFormViewModel model)
     {
         var coverName = $"{Guid.NewGuid()}{Path.GetExtension(model.Cover.FileName)}";
@@ -33,4 +45,5 @@ public class GameService : IGameService
         _dbContext.Add(game);
         _dbContext.SaveChanges();
     }
+
 }
