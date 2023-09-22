@@ -23,13 +23,15 @@ public class GamesController : Controller
     }
     #endregion
 
+    #region Details
     public IActionResult Details(int id)
     {
         var game = _gameService.GetById(id);
         if (game is null)
             return NotFound();
         return View(game);
-    }
+    } 
+    #endregion
 
     #region Create
     [HttpGet]
@@ -60,7 +62,29 @@ public class GamesController : Controller
     #endregion
 
     #region Edit
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        //if (id.ToString() == null)
+        //    return BadRequest();
+        var game = _gameService.GetById(id);
 
+        if (game is null)
+            return NotFound();
+
+        EditGameFormViewModel viewModel = new()
+        {
+            Id = id,
+            Name = game.Name,
+            Description = game.Description,
+            CategoryId = game.CategoryId,
+            SelectedDevices = game.Devices.Select(d=>d.DeviceId).ToList(),
+            Categories = _categoryService.GetSelectListCategory(),
+            Devices = _deviceService.GetSelectListsDevice(),
+            CurrentCover = game.Cover,
+        };
+        return View(viewModel);
+    }
     #endregion
 
     #region Delete

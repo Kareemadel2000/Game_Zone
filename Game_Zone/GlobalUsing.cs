@@ -8,6 +8,8 @@ global using Game_Zone.ViewModels;
 global using Game_Zone.Data;
 global using Game_Zone.Models;
 global using Game_Zone.Setting;
+global using Game_Zone.Attributes;
+
 
 
 
