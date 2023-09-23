@@ -76,7 +76,7 @@ public class GamesController : Controller
         {
             Id = id,
             Name = game.Name,
-            Description = game.Description,
+            Description = game.Description!,
             CategoryId = game.CategoryId,
             SelectedDevices = game.Devices.Select(d=>d.DeviceId).ToList(),
             Categories = _categoryService.GetSelectListCategory(),
@@ -85,9 +85,34 @@ public class GamesController : Controller
         };
         return View(viewModel);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditGameFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Categories = _categoryService.GetSelectListCategory();
+            model.Devices = _deviceService.GetSelectListsDevice();
+            return View(model);
+        }
+       
+        var game = await _gameService.Update(model);
+        if (game is null)
+            return BadRequest();
+
+        return RedirectToAction(nameof(Index));
+    }
     #endregion
 
     #region Delete
+    [HttpDelete]
+    public IActionResult Delete(int id)
+    {
+        //return BadRequest();
+        var isDeleted = _gameService.Delete(id);
+        return isDeleted ?  Ok() : BadRequest();
+    }
 
     #endregion
 
